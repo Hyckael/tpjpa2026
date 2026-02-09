@@ -2,9 +2,9 @@ package dao;
 
 import auth.User;
 
-public class UserDao extends AbstractJpaDao{
+public class UserDao extends AbstractJpaDao< Long,User>{
     public UserDao() {
-        setClazz(User.class);
+        this.setClazz(User.class);
     }
 
     public User findByEmail(String email){

@@ -3,10 +3,11 @@ package event;
 import jakarta.persistence.*;
 import user.Customer;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-public class Ticket {
+public class Ticket implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

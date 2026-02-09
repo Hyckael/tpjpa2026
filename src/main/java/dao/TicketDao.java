@@ -2,8 +2,8 @@ package dao;
 
 import event.Ticket;
 
-public class TicketDao extends AbstractJpaDao {
+public class TicketDao extends AbstractJpaDao <Long, Ticket>{
     public TicketDao() {
-        setClazz(Ticket.class);
+        this.setClazz(Ticket.class);
     }
 }

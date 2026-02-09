@@ -2,8 +2,8 @@ package dao;
 
 import user.Customer;
 
-public class CustomerDao extends AbstractJpaDao{
+public class CustomerDao extends AbstractJpaDao<Long, Customer>{
     public CustomerDao() {
-        setClazz(Customer.class);
+        this.setClazz(Customer.class);
     }
 }

@@ -2,8 +2,8 @@ package dao;
 
 import user.Admin;
 
-public class AdminDao extends AbstractJpaDao{
+public class AdminDao extends AbstractJpaDao<Long, Admin> {
     public AdminDao() {
-        setClazz(Admin.class);
+        this.setClazz(Admin.class);
     }
 }

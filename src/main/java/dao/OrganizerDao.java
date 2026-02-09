@@ -2,8 +2,8 @@ package dao;
 
 import user.Organizer;
 
-public class OrganizerDao extends AbstractJpaDao{
+public class OrganizerDao extends AbstractJpaDao<Long, Organizer>{
     public OrganizerDao() {
-        setClazz(Organizer.class);
+        this.setClazz(Organizer.class);
     }
 }

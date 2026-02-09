@@ -3,12 +3,13 @@ package event;
 import jakarta.persistence.*;
 import user.Organizer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-public class Event {
+public class Event implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

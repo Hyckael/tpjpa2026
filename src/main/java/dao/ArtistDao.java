@@ -2,8 +2,8 @@ package dao;
 
 import event.Artist;
 
-public class ArtistDao extends AbstractJpaDao{
+public class ArtistDao extends AbstractJpaDao<Long, Artist>{
     public ArtistDao(){
-        setClazz(Artist.class);
+        this.setClazz(Artist.class);
     }
 }
