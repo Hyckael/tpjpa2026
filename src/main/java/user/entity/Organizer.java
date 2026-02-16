@@ -1,8 +1,7 @@
-package user;
+package user.entity;
 
-import auth.User;
-import event.Event;
 import jakarta.persistence.*;
+import event.entity.Event;
 
 import java.util.*;
 
@@ -10,13 +9,7 @@ import java.util.*;
 public class Organizer extends User {
     private String companyName;
     public Organizer() {}
-//    @OneToMany(mappedBy = "organizer", cascade = CascadeType.PERSIST)
     @ManyToMany
-    @JoinTable(
-            name = "event_organizer",
-            joinColumns = @JoinColumn(name = "organizer_id"),
-            inverseJoinColumns = @JoinColumn(name = "event_id")
-    )
     private List<Event> events = new ArrayList<>();
 
     public List<Event> getEvents() {
@@ -38,6 +31,7 @@ public class Organizer extends User {
     @Override
     public String toString() {
         return "Organizer{" +
+                super.toString() +
                 "companyName='" + companyName + '\'' +
                 ", events=" + events +
                 '}';

@@ -1,19 +1,19 @@
-package user;
+package user.entity;
 
-import auth.User;
-import event.Ticket;
 import jakarta.persistence.*;
+import ticket.entity.Ticket;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Customer extends User {
+public class Client extends User {
     @Temporal(TemporalType.TIMESTAMP)
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST)
     private List<Ticket> ticket = new ArrayList<Ticket>();
+    private String city;
 
-    public Customer() {}
+    public Client() {}
 
     public List<Ticket> getTicket() {
         return ticket;
@@ -23,10 +23,13 @@ public class Customer extends User {
         this.ticket = ticket;
     }
 
+    public String getCity() {return city;}
+    public void setCity(String city) {this.city = city;}
+
     @Override
     public String toString() {
-        return "Customer{" +
-                "createdAt=" +
+        return "Client{" +
+                super.toString() +
                 ", ticket=" + ticket +
                 '}';
     }

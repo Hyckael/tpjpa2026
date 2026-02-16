@@ -1,7 +1,9 @@
-package event;
+package event.entity;
 
+import artist.Artist;
 import jakarta.persistence.*;
-import user.Organizer;
+import ticket.entity.Ticket;
+import user.entity.Organizer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,12 +15,13 @@ public class Event implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String place;
-    private int ticketAvailable;
+    private int place;
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
     private String description;
     private float price;
+    private String address;
+    private String city;
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
     @ManyToMany(mappedBy = "events")
@@ -26,21 +29,10 @@ public class Event implements Serializable {
     @OneToMany(mappedBy = "event", cascade = CascadeType.PERSIST)
     private List<Ticket> tickets = new ArrayList<Ticket>();
     @ManyToMany
-    @JoinTable(
-            name = "event_artist",
-            joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id")
-    )
-    private List<Artist> artists = new ArrayList<Artist>();
+    private List<Artist> artists=new ArrayList<Artist>();
+
 
     public Event() {}
-    public List<Artist> getArtists() {
-        return artists;
-    }
-
-    public void setArtists(List<Artist> artists) {
-        this.artists = artists;
-    }
 
     public float getPrice() {
         return price;
@@ -58,21 +50,17 @@ public class Event implements Serializable {
         this.id = id;
     }
 
-    public String getPlace() {
+    public int getPlace() {
         return place;
     }
 
-    public void setPlace(String place) {
+    public void setPlace(int place) {
         this.place = place;
     }
 
-    public int getTicketAvailable() {
-        return ticketAvailable;
-    }
+    public String getCity(){return city;}
 
-    public void setTicketAvailable(int ticketAvailable) {
-        this.ticketAvailable = ticketAvailable;
-    }
+    public void setCity(String city){this.city = city;}
 
     public Date getDate() {
         return date;
@@ -89,6 +77,10 @@ public class Event implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public String getAddress() {return address;}
+
+    public void setAddress(String address) {this.address = address;}
 
     public List<Ticket> getTickets() {
         return tickets;
@@ -114,17 +106,26 @@ public class Event implements Serializable {
         this.createdAt = createdAt;
     }
 
+    public List<Artist> getArtists() {
+        return artists;
+    }
+
+    public void setArtist(List<Artist> artists) {
+        this.artists = artists;
+    }
+
     @Override
     public String toString() {
         return "Event{" +
                 "id=" + id +
                 ", place='" + place + '\'' +
-                ", tiketAvailable=" + ticketAvailable +
                 ", date=" + date +
                 ", description='" + description + '\'' +
                 ", price=" + price +
+                ", address='" + address + '\'' +
+                ", city='" + city + '\'' +
                 ", tickets=" + tickets +
-                ", users=" + artists +
+                ",artists=" + artists +
                 ", createdAt=" + createdAt +
                 '}';
     }

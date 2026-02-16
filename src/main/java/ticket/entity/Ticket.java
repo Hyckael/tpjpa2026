@@ -1,7 +1,8 @@
-package event;
+package ticket.entity;
 
+import event.entity.Event;
 import jakarta.persistence.*;
-import user.Customer;
+import user.entity.Client;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -15,7 +16,7 @@ public class Ticket implements Serializable {
     @Enumerated(EnumType.STRING)
     private TicketStatus status;
     @ManyToOne
-    private Customer customer;
+    private Client client;
     @ManyToOne
     private Event event;
     @Temporal(TemporalType.TIMESTAMP)
@@ -40,12 +41,12 @@ public class Ticket implements Serializable {
         this.numero = numero;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public Client getClient() {
+        return client;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public Event getEvent() {
@@ -86,7 +87,7 @@ public class Ticket implements Serializable {
                 "id=" + id +
                 ", numero='" + numero + '\'' +
                 ", status=" + status +
-                ", customer=" + customer +
+                ", customer=" + client +
                 ", event=" + event +
                 ", purchaseDate=" + purchaseDate +
                 ", createdAt=" + createdAt +

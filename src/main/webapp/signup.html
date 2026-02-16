@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>S'inscrire</title>
+</head>
+<body>
+
+<form method="post" action="/user/add">
+
+  <label for="name">Nom:</label><br>
+  <input type="text" id="name" name="name" required><br><br>
+
+  <label for="password">Password:</label><br>
+  <input type="password" id="password" name="password" required><br><br>
+
+  <label for="address">Adresse :</label><br>
+  <input type="text" id="address" name="address" required><br><br>
+
+  <label for="phone">Phone:</label><br>
+  <input type="text" id="phone" name="phone"><br><br>
+
+  <label for="email">Email:</label><br>
+  <input type="email" id="email" name="email"><br><br>
+
+
+  <label for="type">Type :</label><br>
+  <select name="type" id="type" required>
+    <option value="client">Client</option>
+    <option value="organizer">Organisateur</option>
+  </select><br><br>
+
+  <button type="submit">Ajouter</button>
+
+</form>
+
+</body>
+</html>
+
+
+
+

@@ -1,4 +1,4 @@
-package auth;
+package user.entity;
 
 import jakarta.persistence.*;
 
