@@ -1,8 +1,9 @@
-package dao;
+package user.dao;
 
-import auth.User;
+import dao.AbstractJpaDao;
+import user.entity.User;
 
-public class UserDao extends AbstractJpaDao< Long,User>{
+public class UserDao extends AbstractJpaDao< Long,User> {
     public UserDao() {
         this.setClazz(User.class);
     }

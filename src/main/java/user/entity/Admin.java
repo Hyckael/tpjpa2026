@@ -1,6 +1,5 @@
-package user;
+package user.entity;
 
-import auth.User;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -22,6 +21,7 @@ public class Admin extends User {
     @Override
     public String toString() {
         return "Admin{" +
+                super.toString() +
                 "createdAt=" + createdAt +
                 '}';
     }
