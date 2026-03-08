@@ -1,5 +1,6 @@
 package ticket.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import event.entity.Event;
 import jakarta.persistence.*;
 import user.entity.Client;
@@ -12,7 +13,7 @@ public class Ticket implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String numero;
+    private String number;
     @Enumerated(EnumType.STRING)
     private TicketStatus status;
     @ManyToOne
@@ -22,6 +23,7 @@ public class Ticket implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private  Date purchaseDate;
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "UTC")
     private Date createdAt;
 
     public Ticket() {}
@@ -33,12 +35,12 @@ public class Ticket implements Serializable {
         this.id = id;
     }
 
-    public String getNumero() {
-        return numero;
+    public String getNumber() {
+        return number;
     }
 
-    public void setNumero(String numero) {
-        this.numero = numero;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public Client getClient() {
@@ -80,12 +82,15 @@ public class Ticket implements Serializable {
     public void setStatus(TicketStatus status) {
         this.status = status;
     }
-
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = new Date();
+    }
     @Override
     public String toString() {
         return "Ticket{" +
                 "id=" + id +
-                ", numero='" + numero + '\'' +
+                ", numero='" + number + '\'' +
                 ", status=" + status +
                 ", customer=" + client +
                 ", event=" + event +

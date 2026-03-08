@@ -1,12 +1,15 @@
 package user.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@XmlRootElement(name = "user")
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,9 +18,10 @@ public class User implements Serializable {
     @Column(nullable = false, unique = true)
     private String email;
     private String password;
-    private String adresse;
+    private String address;
     private String phone;
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "UTC")
     private Date createdAt;
     public User() {}
 
@@ -60,12 +64,12 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public String getAdresse() {
-        return adresse;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAdresse(String adresse) {
-        this.adresse = adresse;
+    public void setAddress(String adresse) {
+        this.address = adresse;
     }
 
 
@@ -77,6 +81,12 @@ public class User implements Serializable {
         this.createdAt = createdAt;
     }
 
+     //permettre de considérer la date d'enregistrement en base
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = new Date();
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -84,7 +94,7 @@ public class User implements Serializable {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", adresse='" + adresse + '\'' +
+                ", adresse='" + address + '\'' +
                 ", phone='" + phone + '\'' +
                 ", createdAt=" + createdAt +
                 '}';

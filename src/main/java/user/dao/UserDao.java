@@ -1,6 +1,6 @@
 package user.dao;
 
-import dao.AbstractJpaDao;
+import daoGeneric.AbstractJpaDao;
 import user.entity.User;
 
 public class UserDao extends AbstractJpaDao< Long,User> {

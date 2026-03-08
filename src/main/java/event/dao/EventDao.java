@@ -1,6 +1,6 @@
 package event.dao;
 
-import dao.AbstractJpaDao;
+import daoGeneric.AbstractJpaDao;
 import event.entity.Event;
 
 public class EventDao extends AbstractJpaDao<Long, Event> {

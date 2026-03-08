@@ -1,6 +1,6 @@
 package ticket.dao;
 
-import dao.AbstractJpaDao;
+import daoGeneric.AbstractJpaDao;
 import ticket.entity.Ticket;
 
 public class TicketDao extends AbstractJpaDao<Long, Ticket> {

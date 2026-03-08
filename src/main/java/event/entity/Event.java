@@ -1,6 +1,7 @@
 package event.entity;
 
-import artist.Artist;
+import artist.entity.Artist;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import ticket.entity.Ticket;
 import user.entity.Organizer;
@@ -23,6 +24,7 @@ public class Event implements Serializable {
     private String address;
     private String city;
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "UTC")
     private Date createdAt;
     @ManyToMany(mappedBy = "events")
     private List<Organizer> organizer = new ArrayList<Organizer>();
@@ -114,6 +116,10 @@ public class Event implements Serializable {
         this.artists = artists;
     }
 
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = new Date();
+    }
     @Override
     public String toString() {
         return "Event{" +
