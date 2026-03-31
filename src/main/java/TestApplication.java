@@ -17,6 +17,7 @@ public class TestApplication extends Application {
 
         clazzes.add(OpenApiResource.class);
         clazzes.add(UserResource.class);
+        clazzes.add(SwaggerResource.class);
 //        clazzes.add(AcceptHeaderOpenApiResource.class);
 
 

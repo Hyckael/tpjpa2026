@@ -1,6 +1,7 @@
 package user.dao;
 
 import daoGeneric.AbstractJpaDao;
+import jakarta.persistence.NoResultException;
 import user.entity.User;
 
 public class UserDao extends AbstractJpaDao< Long,User> {
@@ -9,8 +10,10 @@ public class UserDao extends AbstractJpaDao< Long,User> {
     }
 
     public User findByEmail(String email){
-        return entityManager.createQuery(
-                "SELECT u FROM User as u WHERE u.email = :email", User.class
-        ).setParameter("email", email).getSingleResult();
+        try{
+            return entityManager.createQuery(
+                    "SELECT u FROM User as u WHERE u.email = :email", User.class
+            ).setParameter("email", email).getSingleResult();
+        } catch(NoResultException e){return null;}
     }
 }

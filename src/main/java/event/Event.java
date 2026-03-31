@@ -1,9 +1,9 @@
-package event.entity;
+package event;
 
-import artist.entity.Artist;
+import artist.Artist;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import ticket.entity.Ticket;
+import ticket.Ticket;
 import user.entity.Organizer;
 
 import java.io.Serializable;
@@ -34,7 +34,7 @@ public class Event implements Serializable {
     private List<Artist> artists=new ArrayList<Artist>();
 
 
-    public Event() {}
+    public Event(Event event) {}
 
     public float getPrice() {
         return price;

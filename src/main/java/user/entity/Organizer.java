@@ -1,7 +1,7 @@
 package user.entity;
 
 import jakarta.persistence.*;
-import event.entity.Event;
+import event.Event;
 
 import java.util.*;
 

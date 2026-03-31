@@ -1,7 +1,7 @@
-package ticket.entity;
+package ticket;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import event.entity.Event;
+import event.Event;
 import jakarta.persistence.*;
 import user.entity.Client;
 
@@ -93,7 +93,7 @@ public class Ticket implements Serializable {
                 ", numero='" + number + '\'' +
                 ", status=" + status +
                 ", customer=" + client +
-                ", event=" + event +
+                ", ticket.event=" + event +
                 ", purchaseDate=" + purchaseDate +
                 ", createdAt=" + createdAt +
                 '}';

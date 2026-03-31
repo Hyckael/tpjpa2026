@@ -36,6 +36,7 @@ public class UserResource {
     }
 
     @POST
+    @Path("/create")
     @Consumes("application/json")
     public Response addUser (User user) {
             try {
@@ -45,5 +46,25 @@ public class UserResource {
                 e.printStackTrace();
                 return Response.serverError().build();
             }
+    }
+
+    @DELETE
+    @Path("/{userId}")
+    public Response deleteUser(@PathParam("userId") Long userId) {
+        try {
+            User user = userDao.findOne(userId);
+            if (user == null) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("Utilisateur non trouvé")
+                        .build();
+            }
+            userDao.delete(user);
+            return Response.ok()
+                    .entity("utilisateur supprimé")
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().build();
+        }
     }
 }

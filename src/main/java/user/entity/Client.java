@@ -1,7 +1,7 @@
 package user.entity;
 
 import jakarta.persistence.*;
-import ticket.entity.Ticket;
+import ticket.Ticket;
 
 import java.util.ArrayList;
 import java.util.List;
