@@ -55,9 +55,9 @@ public class EventResource {
     @Operation(summary = "Récupérer un événement par ses organisateurs")
     @ApiResponse(responseCode = "200", description = "Événement trouvé")
     @ApiResponse(responseCode = "404", description = "Introuvable")
-    public List<Event> getEventsByOrganizer(@PathParam("organizerId") Long organizerId) {
+    public List<EventDTO> getEventsByOrganizer(@PathParam("organizerId") Long organizerId) {
         return eventDao.findByOrganizer(organizerId).stream()
-                .map(Event::new)
+                .map(EventDTO::new)
                 .collect(Collectors.toList());
     }
 
@@ -66,9 +66,9 @@ public class EventResource {
     @Operation(summary = "Recherche un évènement à partir d'une ville")
     @ApiResponse(responseCode = "200", description = "Événement trouvé")
     @ApiResponse(responseCode = "404", description = "Introuvable")
-    public List<Event> getEventsByCity(@PathParam("city") String city) {
+    public List<EventDTO> getEventsByCity(@PathParam("city") String city) {
         return eventDao.findByCity(city).stream()
-                .map(Event::new)
+                .map(EventDTO::new)
                 .collect(Collectors.toList());
     }
 
@@ -100,9 +100,11 @@ public class EventResource {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("Événement non trouvé").build();
         }
-        return Response.ok(event.getTickets().stream()
+        long availableCount = event.getTickets()
+                .stream()
                 .filter(t -> t.getStatus() == TicketStatus.AVAILABLE)
-                .count()).build();
+                .count();
+        return Response.ok(availableCount).build();
     }
 
     @GET
