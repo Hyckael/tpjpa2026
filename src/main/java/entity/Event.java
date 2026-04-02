@@ -1,6 +1,7 @@
 package entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import dto.EventDTO;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -36,6 +37,15 @@ public class Event implements Serializable {
 
 
     public Event(Event event) {}
+
+    public Event(EventDTO eventDTO) {
+        this.address = eventDTO.getAdress();
+        this.city = eventDTO.getCity();
+        this.description = eventDTO.getDescription();
+        this.price = eventDTO.getPrice();
+        this.place = eventDTO.getPlace();
+        this.date = eventDTO.getDate();
+    }
 
     public float getPrice() {
         return price;

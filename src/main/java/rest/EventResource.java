@@ -75,13 +75,14 @@ public class EventResource {
     @POST
     @Path("/create")
     @Operation(summary = "création d'un évenement")
-    @ApiResponse(responseCode = "200", description = "Événement trouvé")
+    @ApiResponse(responseCode = "200", description = "Événement créé")
     @ApiResponse(responseCode = "404", description = "Introuvable")
-    public Response createEvent(Event event) {
+    public Response createEvent(EventDTO eventDTO) {
         try {
+            Event event = new Event(eventDTO);
             eventDao.save(event);
             return Response.status(Response.Status.CREATED)
-                    .entity(new Event(event)).build();
+                    .entity(new EventDTO(event)).build();
         } catch (Exception e) {
             e.printStackTrace();
             return Response.serverError().build();

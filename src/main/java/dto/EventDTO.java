@@ -13,7 +13,7 @@ public class EventDTO {
     private int place;
     private String description;
     private String adress;
-    private String date;
+    private Date date;
     private String city;
     private float price;
 
@@ -54,7 +54,7 @@ public class EventDTO {
         return adress;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
@@ -98,7 +98,7 @@ public class EventDTO {
         this.adress = adress;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
