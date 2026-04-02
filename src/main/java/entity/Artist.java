@@ -1,7 +1,6 @@
-package artist;
+package entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import event.Event;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;

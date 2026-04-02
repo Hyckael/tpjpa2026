@@ -1,16 +1,17 @@
-package event;
+package entity;
 
-import artist.Artist;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import ticket.Ticket;
-import user.entity.Organizer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@NamedQuery(
+        name = "findByArtisteName",
+        query = "SELECT e FROM Event e JOIN e.artists a WHERE a.name LIKE :name"
+)
 @Entity
 public class Event implements Serializable {
     @Id

@@ -1,4 +1,4 @@
-package user.entity;
+package entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;

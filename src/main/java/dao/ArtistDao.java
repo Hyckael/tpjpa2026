@@ -1,6 +1,7 @@
-package artist;
+package dao;
 
 import daoGeneric.AbstractJpaDao;
+import entity.Artist;
 import jakarta.persistence.NoResultException;
 
 import java.util.List;

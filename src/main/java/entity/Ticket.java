@@ -1,9 +1,7 @@
-package ticket;
+package entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import event.Event;
 import jakarta.persistence.*;
-import user.entity.Client;
 
 import java.io.Serializable;
 import java.util.Date;

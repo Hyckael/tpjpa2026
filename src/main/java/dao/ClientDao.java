@@ -1,7 +1,7 @@
-package user.dao;
+package dao;
 
 import daoGeneric.AbstractJpaDao;
-import user.entity.Client;
+import entity.Client;
 
 public class ClientDao extends AbstractJpaDao<Long, Client> {
     public ClientDao() {

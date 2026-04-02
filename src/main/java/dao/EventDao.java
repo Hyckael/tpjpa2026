@@ -1,6 +1,10 @@
-package event;
+package dao;
 
 import daoGeneric.AbstractJpaDao;
+import entity.Event;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 
 import java.util.List;
 
@@ -20,16 +24,18 @@ public class EventDao extends AbstractJpaDao<Long, Event> {
 
     //Fonction pour afficher les ticket.event par ville
     public List<Event> findByCity(String city) {
-        return entityManager.createQuery(
-                "SELECT e FROM Event e WHERE e.city = :city", Event.class)
-                .setParameter("city", city)
-                .getResultList();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Event> cq = cb.createQuery(Event.class);
+        Root<Event> root = cq.from(Event.class);
+
+        cq.where(cb.equal(root.get("city"), city));
+        return entityManager.createQuery(cq).getResultList();
     }
 
-    //Fonction pour determiner les evenement liés à un artitist
+    //Fonction pour determiner les événements liés à un artist
     public List<Event> findByArtisteName(String artisteName) {
-        return entityManager.createQuery(
-                "SELECT e FROM Event e JOIN e.artists a WHERE a.name LIKE :name", Event.class
+        return entityManager.createNamedQuery(
+                "Event.findByArtisteName", Event.class
         ).setParameter("name", "%"+artisteName+"%").getResultList();
     }
 }

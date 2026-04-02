@@ -1,7 +1,7 @@
-package user.dao;
+package dao;
 
 import daoGeneric.AbstractJpaDao;
-import user.entity.Organizer;
+import entity.Organizer;
 
 public class OrganizerDao extends AbstractJpaDao<Long, Organizer> {
     public OrganizerDao() {

@@ -1,8 +1,8 @@
-package user.dao;
+package dao;
 
 import daoGeneric.AbstractJpaDao;
 import jakarta.persistence.NoResultException;
-import user.entity.User;
+import entity.User;
 
 public class UserDao extends AbstractJpaDao< Long,User> {
     public UserDao() {

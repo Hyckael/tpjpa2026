@@ -1,7 +1,6 @@
-package user.entity;
+package entity;
 
 import jakarta.persistence.*;
-import ticket.Ticket;
 
 import java.util.ArrayList;
 import java.util.List;

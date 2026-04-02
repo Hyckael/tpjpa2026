@@ -1,4 +1,4 @@
-package ticket;
+package entity;
 
 public enum TicketStatus {
     AVAILABLE,

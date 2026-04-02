@@ -1,7 +1,7 @@
-package user.dao;
+package dao;
 
 import daoGeneric.AbstractJpaDao;
-import user.entity.Admin;
+import entity.Admin;
 
 public class AdminDao extends AbstractJpaDao<Long, Admin> {
     public AdminDao() {
