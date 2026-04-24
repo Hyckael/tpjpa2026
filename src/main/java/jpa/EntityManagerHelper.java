@@ -13,6 +13,10 @@ public class EntityManagerHelper {
         emf = Persistence.createEntityManagerFactory("dev");
         threadLocal = new ThreadLocal<EntityManager>();
     }
+    // Ajoute juste cette méthode
+    public static EntityManagerFactory getEntityManagerFactory() {
+        return emf;
+    }
 
     public static EntityManager getEntityManager() {
         EntityManager em = threadLocal.get();

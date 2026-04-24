@@ -9,53 +9,82 @@ import jpa.EntityManagerHelper;
 
 public abstract class AbstractJpaDao<K, T extends Serializable> implements IGenericDao<K, T> {
 
-	private Class<T> clazz;
+    private Class<T> clazz;
 
-	protected EntityManager entityManager;
+    public void setClazz(Class<T> clazzToSet) {
+        this.clazz = clazzToSet;
+    }
 
-	public AbstractJpaDao() {
-		this.entityManager = EntityManagerHelper.getEntityManager();
-	}
+    protected EntityManager getEm() {
+        return EntityManagerHelper.getEntityManagerFactory().createEntityManager();
+    }
 
-	public void setClazz(Class<T> clazzToSet) {
-		this.clazz = clazzToSet;
-	}
+    public T findOne(K id) {
+        EntityManager em = getEm();
+        try {
+            return em.find(clazz, id);
+        } finally {
+            em.close();
+        }
+    }
 
-	public T findOne(K id) {
-		return entityManager.find(clazz, id);
-	}
+    public List<T> findAll() {
+        EntityManager em = getEm();
+        try {
+            return em.createQuery("select e from " + clazz.getName() + " as e", clazz)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
 
-	public List<T> findAll() {
-		return entityManager.createQuery("select e from " + clazz.getName() + " as e",clazz).getResultList();
-	}
+    public void save(T entity) {
+        EntityManager em = getEm();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            em.persist(entity);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
 
-	public void save(T entity) {
-		EntityTransaction t = this.entityManager.getTransaction();
-		t.begin();
-		entityManager.persist(entity);
-		t.commit();
+    public T update(T entity) {
+        EntityManager em = getEm();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            T res = em.merge(entity);
+            tx.commit();
+            return res;
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
 
-	}
+    public void delete(T entity) {
+        EntityManager em = getEm();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            em.remove(em.contains(entity) ? entity : em.merge(entity));
+            tx.commit();
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
 
-	public T update(final T entity) {
-		EntityTransaction t = this.entityManager.getTransaction();
-		t.begin();
-		T res = entityManager.merge(entity);
-		t.commit();
-		return res;
-
-	}
-
-	public void delete(T entity) {
-		EntityTransaction t = this.entityManager.getTransaction();
-		t.begin();
-		entityManager.remove(entity);
-		t.commit();
-
-	}
-
-	public void deleteById(K entityId) {
-		T entity = findOne(entityId);
-		delete(entity);
-	}
+    public void deleteById(K entityId) {
+        delete(findOne(entityId));
+    }
 }
