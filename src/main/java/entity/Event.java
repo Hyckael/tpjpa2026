@@ -1,6 +1,7 @@
 package entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dto.EventDTO;
 import jakarta.persistence.*;
 
@@ -23,28 +24,34 @@ public class Event implements Serializable {
     private Date date;
     private String description;
     private float price;
+    @Column(length = 500)
+    private String imageUrl;
     private String address;
     private String city;
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "UTC")
     private Date createdAt;
     @ManyToMany(mappedBy = "events")
+    @JsonIgnore
     private List<Organizer> organizer = new ArrayList<Organizer>();
     @OneToMany(mappedBy = "event", cascade = CascadeType.PERSIST)
+    @JsonIgnore
     private List<Ticket> tickets = new ArrayList<Ticket>();
     @ManyToMany
+    @JsonIgnore
     private List<Artist> artists=new ArrayList<Artist>();
 
 
     public Event(Event event) {}
 
     public Event(EventDTO eventDTO) {
-        this.address = eventDTO.getAdress();
+        this.address = eventDTO.getAddress();
         this.city = eventDTO.getCity();
         this.description = eventDTO.getDescription();
         this.price = eventDTO.getPrice();
         this.place = eventDTO.getPlace();
         this.date = eventDTO.getDate();
+        this.imageUrl = eventDTO.getImageUrl();
     }
 
     public float getPrice() {
@@ -67,6 +74,8 @@ public class Event implements Serializable {
         return place;
     }
 
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
     public void setPlace(int place) {
         this.place = place;
     }

@@ -12,16 +12,17 @@ public class EventDTO {
     private Long id;
     private int place;
     private String description;
-    private String adress;
+    private String address;
+    private String imageUrl;@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     private Date date;
     private String city;
     private float price;
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "UTC")
     private Date createdAt;
     private List<String> artisteName;
     private List<String> organizerName;
     private int ticketCount;
+    private Long organizerId;
 
     public EventDTO() {}
 
@@ -29,8 +30,9 @@ public class EventDTO {
         this.id = event.getId();
         this.place = event.getPlace();
         this.description = event.getDescription();
-        this.adress = event.getAddress();
+        this.address = event.getAddress();
         this.price = event.getPrice();
+        this.imageUrl = event.getImageUrl();
         this.city = event.getCity();
         this.ticketCount = event.getTickets().size();
         this.createdAt = event.getCreatedAt();
@@ -50,8 +52,16 @@ public class EventDTO {
         return description;
     }
 
-    public String getAdress() {
-        return adress;
+    public String getAddress() {
+        return address;
+    }
+
+    public Long getOrganizerId() {
+        return organizerId;
+    }
+
+    public void setOrganizerId(Long organizerId) {
+        this.organizerId = organizerId;
     }
 
     public Date getDate() {
@@ -94,8 +104,8 @@ public class EventDTO {
         this.description = description;
     }
 
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public void setDate(Date date) {
@@ -124,5 +134,13 @@ public class EventDTO {
 
     public void setTicketCount(int ticketCount) {
         this.ticketCount = ticketCount;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

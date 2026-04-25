@@ -1,5 +1,6 @@
 package entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.*;
@@ -9,6 +10,7 @@ public class Organizer extends User {
     private String companyName;
     public Organizer() {}
     @ManyToMany
+    @JsonIgnore
     private List<Event> events = new ArrayList<>();
 
     public List<Event> getEvents() {

@@ -1,5 +1,6 @@
 package entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.List;
 public class Client extends User {
     @Temporal(TemporalType.TIMESTAMP)
     @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST)
+    @JsonIgnore
     private List<Ticket> ticket = new ArrayList<Ticket>();
     private String city;
 

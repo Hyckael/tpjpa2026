@@ -32,7 +32,7 @@ public class EventResource {
             content = @Content(schema = @Schema(implementation = EventDTO.class)))
     @ApiResponse(responseCode = "404", description = "Introuvable")
     public EventDTO getEventById(@PathParam("eventId") Long eventId) {
-        Event event = eventDao.findOne(eventId);
+        Event event = eventDao.findOneWithDetails(eventId);
         if (event == null) {
             throw new WebApplicationException("Événement non trouvé", Response.Status.NOT_FOUND);
         }
@@ -45,7 +45,7 @@ public class EventResource {
     @ApiResponse(responseCode = "200", description = "Événement trouvé")
     @ApiResponse(responseCode = "404", description = "Introuvable")
     public List<EventDTO> getAllEvents() {
-        return eventDao.findAll().stream()
+        return eventDao.findAllWithDetails().stream()
                 .map(EventDTO::new)
                 .collect(Collectors.toList());
     }
@@ -56,9 +56,9 @@ public class EventResource {
     @ApiResponse(responseCode = "200", description = "Événement trouvé")
     @ApiResponse(responseCode = "404", description = "Introuvable")
     public List<EventDTO> getEventsByOrganizer(@PathParam("organizerId") Long organizerId) {
-        return eventDao.findByOrganizer(organizerId).stream()
-                .map(EventDTO::new)
-                .collect(Collectors.toList());
+        List<Event> events = eventDao.findByOrganizer(organizerId);
+        if (events == null) return List.of();
+        return events.stream().map(EventDTO::new).collect(Collectors.toList());
     }
 
     @GET
@@ -80,12 +80,12 @@ public class EventResource {
     public Response createEvent(EventDTO eventDTO) {
         try {
             Event event = new Event(eventDTO);
-            eventDao.save(event);
+            eventDao.saveWithOrganizer(event, eventDTO.getOrganizerId()); // ← nouvelle méthode
             return Response.status(Response.Status.CREATED)
                     .entity(new EventDTO(event)).build();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.serverError().build();
+            return Response.serverError().entity(e.getMessage()).build();
         }
     }
 
@@ -95,7 +95,7 @@ public class EventResource {
     @ApiResponse(responseCode = "200", description = "Événement trouvé")
     @ApiResponse(responseCode = "404", description = "Introuvable")
     public Response getAvailableTickets(@PathParam("eventId") Long eventId) {
-        Event event = eventDao.findOne(eventId);
+        Event event = eventDao.findOneWithDetails(eventId);
         if (event == null) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("Événement non trouvé").build();

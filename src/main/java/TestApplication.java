@@ -3,7 +3,9 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
+import rest.ArtistResource;
 import rest.CorsFilter;
+import rest.EventResource;
 import rest.UserResource;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,6 +25,8 @@ public class TestApplication extends Application {
         final Set<Class<?>> clazzes = new HashSet<>();
         clazzes.add(OpenApiResource.class);
         clazzes.add(UserResource.class);
+        clazzes.add(EventResource.class);
+        clazzes.add(ArtistResource.class);
         clazzes.add(SwaggerResource.class);
         clazzes.add(CorsFilter.class);
         return clazzes;
