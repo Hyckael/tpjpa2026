@@ -42,8 +42,7 @@ public class Event implements Serializable {
     private List<Artist> artists=new ArrayList<Artist>();
 
 
-    public Event(Event event) {}
-
+    public Event(){}
     public Event(EventDTO eventDTO) {
         this.address = eventDTO.getAddress();
         this.city = eventDTO.getCity();
