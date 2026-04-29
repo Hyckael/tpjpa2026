@@ -50,13 +50,13 @@ public class UserResource {
                         .build();
             }
 
-            // Détermine le rôle selon le type réel de l'objet
+            // Déterminer le rôle basé sur le type réel de l'utilisateur
             String role;
             if (user instanceof Organizer) role = "organizer";
             else if (user instanceof Admin) role = "admin";
+            else if (user instanceof Client) role = "user";
             else role = "user";
 
-            // Retourne les infos utiles au front
             LoginResponseDto response = new LoginResponseDto(
                     user.getId(),
                     user.getName(),

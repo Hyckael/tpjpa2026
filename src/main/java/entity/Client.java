@@ -8,7 +8,6 @@ import java.util.List;
 
 @Entity
 public class Client extends User {
-    @Temporal(TemporalType.TIMESTAMP)
     @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST)
     @JsonIgnore
     private List<Ticket> ticket = new ArrayList<Ticket>();

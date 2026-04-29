@@ -2,7 +2,6 @@ package rest;
 
 import dto.EventDTO;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,10 +11,8 @@ import jakarta.ws.rs.core.Response;
 import dao.EventDao;
 import entity.Event;
 import dao.TicketDao;
-import entity.TicketStatus;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Path("event")
 @Produces({"application/json", "application/xml"})
@@ -32,11 +29,11 @@ public class EventResource {
             content = @Content(schema = @Schema(implementation = EventDTO.class)))
     @ApiResponse(responseCode = "404", description = "Introuvable")
     public EventDTO getEventById(@PathParam("eventId") Long eventId) {
-        Event event = eventDao.findOneWithDetails(eventId);
-        if (event == null) {
+        EventDTO dto = eventDao.findOneWithDetails(eventId);
+        if (dto == null) {
             throw new WebApplicationException("Événement non trouvé", Response.Status.NOT_FOUND);
         }
-        return new EventDTO(event);
+        return dto;
     }
 
     @GET
@@ -45,9 +42,7 @@ public class EventResource {
     @ApiResponse(responseCode = "200", description = "Événement trouvé")
     @ApiResponse(responseCode = "404", description = "Introuvable")
     public List<EventDTO> getAllEvents() {
-        return eventDao.findAllWithDetails().stream()
-                .map(EventDTO::new)
-                .collect(Collectors.toList());
+        return eventDao.findAllWithDetails();
     }
 
     @GET
@@ -55,10 +50,14 @@ public class EventResource {
     @Operation(summary = "Récupérer un événement par ses organisateurs")
     @ApiResponse(responseCode = "200", description = "Événement trouvé")
     @ApiResponse(responseCode = "404", description = "Introuvable")
-    public List<EventDTO> getEventsByOrganizer(@PathParam("organizerId") Long organizerId) {
-        List<Event> events = eventDao.findByOrganizer(organizerId);
-        if (events == null) return List.of();
-        return events.stream().map(EventDTO::new).collect(Collectors.toList());
+    public Response getEventsByOrganizer(@PathParam("organizerId") Long organizerId) {
+        try {
+            List<EventDTO> events = eventDao.findByOrganizerAsDTO(organizerId);
+            return Response.ok(events).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().entity(e.getMessage()).build();
+        }
     }
 
     @GET
@@ -66,10 +65,14 @@ public class EventResource {
     @Operation(summary = "Recherche un évènement à partir d'une ville")
     @ApiResponse(responseCode = "200", description = "Événement trouvé")
     @ApiResponse(responseCode = "404", description = "Introuvable")
-    public List<EventDTO> getEventsByCity(@PathParam("city") String city) {
-        return eventDao.findByCity(city).stream()
-                .map(EventDTO::new)
-                .collect(Collectors.toList());
+    public Response getEventsByCity(@PathParam("city") String city) {
+        try {
+            List<EventDTO> events = eventDao.findByCityAsDTO(city);
+            return Response.ok(events).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().entity(e.getMessage()).build();
+        }
     }
 
     @POST
@@ -80,9 +83,10 @@ public class EventResource {
     public Response createEvent(EventDTO eventDTO) {
         try {
             Event event = new Event(eventDTO);
-            eventDao.saveWithOrganizer(event, eventDTO.getOrganizerId()); // ← nouvelle méthode
-            return Response.status(Response.Status.CREATED)
-                    .entity(new EventDTO(event)).build();
+            eventDao.saveWithOrganizer(event, eventDTO.getOrganizerId());
+            // Recharger avec détails après save
+            EventDTO saved = eventDao.findOneWithDetails(event.getId());
+            return Response.status(Response.Status.CREATED).entity(saved).build();
         } catch (Exception e) {
             e.printStackTrace();
             return Response.serverError().entity(e.getMessage()).build();
@@ -95,16 +99,12 @@ public class EventResource {
     @ApiResponse(responseCode = "200", description = "Événement trouvé")
     @ApiResponse(responseCode = "404", description = "Introuvable")
     public Response getAvailableTickets(@PathParam("eventId") Long eventId) {
-        Event event = eventDao.findOneWithDetails(eventId);
-        if (event == null) {
+        long count = eventDao.countAvailableTickets(eventId);
+        if (count == -1) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("Événement non trouvé").build();
         }
-        long availableCount = event.getTickets()
-                .stream()
-                .filter(t -> t.getStatus() == TicketStatus.AVAILABLE)
-                .count();
-        return Response.ok(availableCount).build();
+        return Response.ok(count).build();
     }
 
     @GET
@@ -112,20 +112,18 @@ public class EventResource {
     @Operation(summary = "Rechercher des événements par artiste")
     @ApiResponse(responseCode = "200", description = "Liste des événements trouvés")
     @ApiResponse(responseCode = "404", description = "Aucun événement trouvé")
-    public List<EventDTO> getEventsByArtist(
-            @Parameter(description = "Nom de l'artiste", required = true)
-            @QueryParam("artist") String artisteName
-    ) {
-        List<Event> events = eventDao.findByArtisteName(artisteName);
-
-        if (events == null || events.isEmpty()) {
-            throw new WebApplicationException("Aucun événement trouvé pour cet artiste",
-                    Response.Status.NOT_FOUND);
+    public Response getEventsByArtist(@QueryParam("artist") String artisteName) {
+        try {
+            List<EventDTO> events = eventDao.findByArtisteNameAsDTO(artisteName);
+            if (events.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("Aucun événement trouvé pour cet artiste").build();
+            }
+            return Response.ok(events).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().entity(e.getMessage()).build();
         }
-
-        return events.stream()
-                .map(EventDTO::new)
-                .collect(Collectors.toList());
     }
 
     @DELETE

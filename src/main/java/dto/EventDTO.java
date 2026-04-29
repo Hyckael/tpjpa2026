@@ -13,7 +13,8 @@ public class EventDTO {
     private int place;
     private String description;
     private String address;
-    private String imageUrl;@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
+    private String imageUrl;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     private Date date;
     private String city;
     private float price;
@@ -29,6 +30,7 @@ public class EventDTO {
     public EventDTO(Event event){
         this.id = event.getId();
         this.place = event.getPlace();
+        this.date =  event.getDate();
         this.description = event.getDescription();
         this.address = event.getAddress();
         this.price = event.getPrice();
@@ -38,6 +40,9 @@ public class EventDTO {
         this.createdAt = event.getCreatedAt();
         this.artisteName = event.getArtists().stream().map(Artist::getName).collect(Collectors.toList());
         this.organizerName = event.getOrganizer().stream().map(Organizer::getName).collect(Collectors.toList());
+        if (!event.getOrganizer().isEmpty()) {
+            this.organizerId = event.getOrganizer().get(0).getId();
+        }
     }
 
     public Long getId() {
