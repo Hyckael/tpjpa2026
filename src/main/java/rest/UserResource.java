@@ -95,6 +95,14 @@ public class UserResource {
     @ApiResponse(responseCode = "404", description = "echec")
     public Response addUser (UserDto dto) {
         try {
+            // Vérifie si l'email existe déjà
+            User existing = userDao.findByEmail(dto.getEmail());
+            if (existing != null) {
+                return Response.status(Response.Status.CONFLICT)
+                        .entity("Un compte existe déjà avec cette adresse email.")
+                        .build();
+            }
+
             User user;
             switch (dto.getRole()) {
                 case "organizer":
@@ -111,12 +119,13 @@ public class UserResource {
             }
             user.setName(dto.getName());
             user.setEmail(dto.getEmail());
-            user.setPassword(dto.getPassword()); // à hasher en prod !
+            user.setPassword(dto.getPassword());
             user.setAddress(dto.getAddress() != null ? dto.getAddress() : "");
             user.setPhone(dto.getPhone() != null ? dto.getPhone() : "");
 
             userDao.save(user);
             return Response.ok().entity("SUCCESS").build();
+
         } catch (Exception e) {
             e.printStackTrace();
             return Response.serverError().entity(e.getMessage()).build();

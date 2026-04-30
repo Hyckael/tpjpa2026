@@ -1,5 +1,6 @@
 package rest;
 
+import dto.ArtistDto;
 import entity.Artist;
 import dao.ArtistDao;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +15,7 @@ import java.util.List;
 @Produces({"application/json", "application/xml"})
 @Tag(name = "Artists", description = "Gestion des Artists")
 public class ArtistResource {
-    public final ArtistDao  artistDao =  new ArtistDao();
+    public final ArtistDao artistDao = new ArtistDao();
 
     @GET
     @Path("/{artistId}")
@@ -36,7 +37,6 @@ public class ArtistResource {
     @ApiResponse(responseCode = "404", description = "Introuvable")
     public List<Artist> getAllArtist() {
         List<Artist> artists = artistDao.findAll();
-
         if (artists == null) {
             throw new WebApplicationException("Aucun artist trouvé", Response.Status.NOT_FOUND);
         }
@@ -46,16 +46,16 @@ public class ArtistResource {
     @POST
     @Path("/create")
     @Consumes("application/json")
-    @Operation(summary = "Création d'un artist")
+    @Operation(summary = "Création d'un artist lié à un événement")
     @ApiResponse(responseCode = "200", description = "artist créé")
     @ApiResponse(responseCode = "404", description = "échec")
-    public Response addArtist (Artist artist) {
+    public Response addArtist(ArtistDto dto) { // ← ArtistDto au lieu de Artist
         try {
-            artistDao.save(artist);
+            artistDao.saveAndLinkToEvent(dto);
             return Response.ok().entity("SUCCESS").build();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.serverError().build();
+            return Response.serverError().entity(e.getMessage()).build();
         }
     }
 
@@ -73,13 +73,10 @@ public class ArtistResource {
                         .build();
             }
             artistDao.delete(artist);
-            return Response.ok()
-                    .entity("artist supprimé")
-                    .build();
+            return Response.ok().entity("artist supprimé").build();
         } catch (Exception e) {
             e.printStackTrace();
             return Response.serverError().build();
         }
-
     }
 }
