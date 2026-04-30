@@ -6,9 +6,7 @@ import dto.EventDTO;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @NamedQuery(
         name = "findByArtisteName",
@@ -33,13 +31,13 @@ public class Event implements Serializable {
     private Date createdAt;
     @ManyToMany(mappedBy = "events")
     @JsonIgnore
-    private List<Organizer> organizer = new ArrayList<Organizer>();
+    private Set<Organizer> organizer = new HashSet<>();
     @OneToMany(mappedBy = "event", cascade = CascadeType.PERSIST)
     @JsonIgnore
-    private List<Ticket> tickets = new ArrayList<Ticket>();
+    private Set<Ticket> tickets = new HashSet<>();
     @ManyToMany
     @JsonIgnore
-    private List<Artist> artists=new ArrayList<Artist>();
+    private Set<Artist> artists = new HashSet<>();
 
 
     public Event(){}
@@ -103,19 +101,19 @@ public class Event implements Serializable {
 
     public void setAddress(String address) {this.address = address;}
 
-    public List<Ticket> getTickets() {
+    public Set<Ticket> getTickets() {
         return tickets;
     }
 
-    public void setTickets(List<Ticket> tickets) {
+    public void setTickets(Set<Ticket> tickets) {
         this.tickets = tickets;
     }
 
-    public List<Organizer> getOrganizer() {
+    public Set<Organizer> getOrganizer() {
         return organizer;
     }
 
-    public void setOrganizer(List<Organizer> organizer) {
+    public void setOrganizer(Set<Organizer> organizer) {
         this.organizer = organizer;
     }
 
@@ -127,11 +125,11 @@ public class Event implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public List<Artist> getArtists() {
+    public Set<Artist> getArtists() {
         return artists;
     }
 
-    public void setArtist(List<Artist> artists) {
+    public void setArtist(Set<Artist> artists) {
         this.artists = artists;
     }
 

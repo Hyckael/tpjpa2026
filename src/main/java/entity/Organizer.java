@@ -11,13 +11,13 @@ public class Organizer extends User {
     public Organizer() {}
     @ManyToMany
     @JsonIgnore
-    private List<Event> events = new ArrayList<>();
+    private Set<Event> events = new HashSet<>();
 
-    public List<Event> getEvents() {
+    public Set<Event> getEvents() {
         return events;
     }
 
-    public void setEvents(List<Event> events) {
+    public void setEvents(Set<Event> events) {
         this.events = events;
     }
 

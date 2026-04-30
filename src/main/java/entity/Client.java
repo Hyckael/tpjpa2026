@@ -3,23 +3,23 @@ package entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Client extends User {
     @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST)
     @JsonIgnore
-    private List<Ticket> ticket = new ArrayList<Ticket>();
+    private Set<Ticket> ticket = new HashSet<>();
     private String city;
 
     public Client() {}
 
-    public List<Ticket> getTicket() {
+    public Set<Ticket> getTicket() {
         return ticket;
     }
 
-    public void setTicket(List<Ticket> ticket) {
+    public void setTicket(Set<Ticket> ticket) {
         this.ticket = ticket;
     }
 

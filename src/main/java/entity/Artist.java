@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Artist implements Serializable {
@@ -30,7 +31,7 @@ public class Artist implements Serializable {
     private Date createdAt;
 
     @ManyToMany(mappedBy = "artists")
-    private List<Event> events;
+    private Set<Event> events = new HashSet<>();
 
     public Artist() {}
 
@@ -72,10 +73,10 @@ public class Artist implements Serializable {
     public void setCountry(String country) {
         this.country = country;
     }
-    public List<Event> getEvents() {
+    public Set<Event> getEvents() {
         return events;
     }
-    public void setEvents(List<Event> events) {
+    public void setEvents(Set<Event> events) {
         this.events = events;
     }
     public Date getCreatedAt() {

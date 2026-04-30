@@ -8,6 +8,11 @@ import java.util.Date;
 
 public class TicketDto {
     private Long id;
+    private String eventImageUrl;
+    private String eventAddress;
+    private String eventCity;
+    private float eventPrice;
+    private Date eventDate;
     private String number;
     private TicketStatus status;
     private Long clientId;
@@ -36,6 +41,15 @@ public class TicketDto {
         if (ticket.getEvent() != null) {
             this.eventId = ticket.getEvent().getId();
             this.eventDescription = ticket.getEvent().getDescription();
+        }
+        if (ticket.getEvent() != null) {
+            this.eventId = ticket.getEvent().getId();
+            this.eventDescription = ticket.getEvent().getDescription();
+            this.eventImageUrl = ticket.getEvent().getImageUrl();   // ← ajout
+            this.eventAddress = ticket.getEvent().getAddress();     // ← ajout
+            this.eventCity = ticket.getEvent().getCity();           // ← ajout
+            this.eventPrice = ticket.getEvent().getPrice();         // ← ajout
+            this.eventDate = ticket.getEvent().getDate();           // ← ajout
         }
     }
 
@@ -109,5 +123,45 @@ public class TicketDto {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getEventImageUrl() {
+        return eventImageUrl;
+    }
+
+    public void setEventImageUrl(String eventImageUrl) {
+        this.eventImageUrl = eventImageUrl;
+    }
+
+    public String getEventAddress() {
+        return eventAddress;
+    }
+
+    public void setEventAddress(String eventAddress) {
+        this.eventAddress = eventAddress;
+    }
+
+    public String getEventCity() {
+        return eventCity;
+    }
+
+    public void setEventCity(String eventCity) {
+        this.eventCity = eventCity;
+    }
+
+    public float getEventPrice() {
+        return eventPrice;
+    }
+
+    public void setEventPrice(float eventPrice) {
+        this.eventPrice = eventPrice;
+    }
+
+    public Date getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(Date eventDate) {
+        this.eventDate = eventDate;
     }
 }

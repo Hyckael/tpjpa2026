@@ -41,7 +41,7 @@ public class EventDTO {
         this.artisteName = event.getArtists().stream().map(Artist::getName).collect(Collectors.toList());
         this.organizerName = event.getOrganizer().stream().map(Organizer::getName).collect(Collectors.toList());
         if (!event.getOrganizer().isEmpty()) {
-            this.organizerId = event.getOrganizer().get(0).getId();
+            this.organizerId = event.getOrganizer().stream().findFirst().map(Organizer::getId).orElse(null);
         }
     }
 

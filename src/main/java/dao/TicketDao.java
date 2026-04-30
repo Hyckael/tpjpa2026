@@ -2,10 +2,7 @@ package dao;
 
 import daoGeneric.AbstractJpaDao;
 import dto.TicketDto;
-import entity.Client;
-import entity.Event;
-import entity.Ticket;
-import entity.TicketStatus;
+import entity.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
@@ -29,48 +26,42 @@ public class TicketDao extends AbstractJpaDao<Long, Ticket> {
         try {
             tx.begin();
 
-            // Récupérer l'événement
+            // Vérifie que l'event existe
             Event event = em.find(Event.class, eventId);
             if (event == null) {
                 throw new IllegalArgumentException("Événement non trouvé");
             }
 
-            // Récupérer le client
-            Client client = em.find(Client.class, clientId);
-            if (client == null) {
+            // Vérifie que le client existe
+            User user = em.find(User.class, clientId);
+            if (!(user instanceof Client)) {
                 throw new IllegalArgumentException("Client non trouvé");
             }
+            Client client = (Client) user;
 
-            // Vérifier s'il y a des tickets disponibles
-            long availableCount = event.getTickets()
-                    .stream()
-                    .filter(t -> t.getStatus() == TicketStatus.AVAILABLE)
-                    .count();
+            // Compte les tickets déjà vendus pour cet event
+            Long soldCount = em.createQuery(
+                            "SELECT COUNT(t) FROM Ticket t WHERE t.event.id = :eventId " +
+                                    "AND t.status = :status", Long.class
+                    ).setParameter("eventId", eventId)
+                    .setParameter("status", TicketStatus.SOLD)
+                    .getSingleResult();
 
-            if (availableCount == 0) {
-                throw new IllegalStateException("Aucun ticket disponible pour cet événement");
+            // Vérifie qu'il reste des places
+            if (soldCount >= event.getPlace()) {
+                throw new IllegalStateException("Aucune place disponible pour cet événement");
             }
 
-            // Trouver un ticket disponible
-            Ticket availableTicket = event.getTickets()
-                    .stream()
-                    .filter(t -> t.getStatus() == TicketStatus.AVAILABLE)
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("Aucun ticket disponible"));
+            Ticket ticket = new Ticket();
+            ticket.setEvent(event);
+            ticket.setClient(client);
+            ticket.setStatus(TicketStatus.SOLD);
+            ticket.setPurchaseDate(new Date());
+            ticket.setNumber("TKT-" + eventId + "-" + clientId + "-" + System.currentTimeMillis());
 
-            // Mettre à jour le ticket
-            availableTicket.setStatus(TicketStatus.SOLD);
-            availableTicket.setClient(client);
-            availableTicket.setPurchaseDate(new Date());
-
-            // Ajouter le ticket à la liste du client
-            client.getTicket().add(availableTicket);
-
-            em.merge(availableTicket);
-            em.merge(client);
-
+            em.persist(ticket);
             tx.commit();
-            return availableTicket;
+            return ticket;
 
         } catch (Exception e) {
             if (tx.isActive()) tx.rollback();
@@ -90,7 +81,6 @@ public class TicketDao extends AbstractJpaDao<Long, Ticket> {
                     "SELECT t FROM Ticket t WHERE t.client.id = :clientId", Ticket.class
             ).setParameter("clientId", clientId).getResultList();
 
-            // Force le chargement des relations
             tickets.forEach(t -> {
                 t.getClient().getName();
                 t.getEvent().getDescription();
