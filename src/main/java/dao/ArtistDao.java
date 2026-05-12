@@ -25,7 +25,7 @@ public class ArtistDao extends AbstractJpaDao<Long, Artist> {
             em.close();
         }
     }
-    public Artist saveAndLinkToEvent(ArtistDto dto) {
+    public Artist save(ArtistDto dto) {
         EntityManager em = getEm();
         EntityTransaction tx = em.getTransaction();
         try {
@@ -38,14 +38,6 @@ public class ArtistDao extends AbstractJpaDao<Long, Artist> {
             artist.setCountry(dto.getCountry());
 
             em.persist(artist);
-
-            // Lier à l'event si fourni
-            if (dto.getEventId() != null) {
-                Event event = em.find(Event.class, dto.getEventId());
-                if (event != null) {
-                    event.getArtists().add(artist);
-                }
-            }
 
             tx.commit();
             return artist;

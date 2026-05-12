@@ -10,6 +10,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("artist")
 @Produces({"application/json", "application/xml"})
@@ -35,12 +36,22 @@ public class ArtistResource {
     @Operation(summary = "Récupérer tous les artists")
     @ApiResponse(responseCode = "200", description = "artists trouvés")
     @ApiResponse(responseCode = "404", description = "Introuvable")
-    public List<Artist> getAllArtist() {
+    public List<ArtistDto> getAllArtist() {
         List<Artist> artists = artistDao.findAll();
         if (artists == null) {
             throw new WebApplicationException("Aucun artist trouvé", Response.Status.NOT_FOUND);
         }
-        return artists;
+        return artists.stream()
+                .map(a -> {
+                    ArtistDto dto = new ArtistDto();
+                    dto.setId(a.getId());
+                    dto.setName(a.getName());
+                    dto.setGenre(a.getGenre());
+                    dto.setBiography(a.getBiography());
+                    dto.setCountry(a.getCountry());
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
     @POST
@@ -51,7 +62,7 @@ public class ArtistResource {
     @ApiResponse(responseCode = "404", description = "échec")
     public Response addArtist(ArtistDto dto) { // ← ArtistDto au lieu de Artist
         try {
-            artistDao.saveAndLinkToEvent(dto);
+            artistDao.save(dto);
             return Response.ok().entity("SUCCESS").build();
         } catch (Exception e) {
             e.printStackTrace();
