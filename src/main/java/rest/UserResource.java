@@ -72,6 +72,50 @@ public class UserResource {
         }
     }
 
+    @PUT
+    @Path("/{userId}")
+    @Consumes("application/json")
+    @Operation(summary = "Mise à jour d'un utilisateur")
+    @ApiResponse(responseCode = "200", description = "Utilisateur mis à jour")
+    @ApiResponse(responseCode = "404", description = "Introuvable")
+    public Response updateUser(@PathParam("userId") Long userId, UserDto dto) {
+        try {
+            User user = userDao.findOne(userId);
+            if (user == null) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("Utilisateur non trouvé").build();
+            }
+
+            // Mise à jour des champs communs
+            if (dto.getName() != null && !dto.getName().isEmpty()) {
+                user.setName(dto.getName());
+            }
+            if (dto.getPhone() != null) {
+                user.setPhone(dto.getPhone());
+            }
+            if (dto.getAddress() != null) {
+                user.setAddress(dto.getAddress());
+            }
+
+            // Changement de mot de passe
+            if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+                user.setPassword(dto.getPassword());
+            }
+
+            // Champs spécifiques à l'organisateur
+            if (user instanceof Organizer && dto.getCompanyName() != null) {
+                ((Organizer) user).setCompanyName(dto.getCompanyName());
+            }
+
+            userDao.update(user);
+            return Response.ok().entity("Profil mis à jour avec succès.").build();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
+
     @GET
     @Path("/")
     @Operation(summary = "Récupérer tous les utilisateurs")

@@ -12,6 +12,7 @@ import dao.EventDao;
 import entity.Event;
 import dao.TicketDao;
 
+import java.util.Date;
 import java.util.List;
 
 @Path("event")
@@ -120,6 +121,46 @@ public class EventResource {
                         .entity("Aucun événement trouvé pour cet artiste").build();
             }
             return Response.ok(events).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
+
+    @PUT
+    @Path("/{eventId}")
+    @Consumes("application/json")
+    @Operation(summary = "Modifier un événement")
+    @ApiResponse(responseCode = "200", description = "Événement modifié")
+    @ApiResponse(responseCode = "403", description = "Événement déjà passé")
+    @ApiResponse(responseCode = "404", description = "Introuvable")
+    public Response updateEvent(@PathParam("eventId") Long eventId, EventDTO eventDTO) {
+        try {
+            Event event = eventDao.findOne(eventId);
+            if (event == null) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("Événement non trouvé").build();
+            }
+
+            if (event.getDate() != null && event.getDate().before(new Date())) {
+                return Response.status(Response.Status.FORBIDDEN)
+                        .entity("Impossible de modifier un événement passé.").build();
+            }
+
+            // Met à jour les champs
+            if (eventDTO.getDescription() != null) event.setDescription(eventDTO.getDescription());
+            if (eventDTO.getAddress() != null) event.setAddress(eventDTO.getAddress());
+            if (eventDTO.getCity() != null) event.setCity(eventDTO.getCity());
+            if (eventDTO.getDate() != null) event.setDate(eventDTO.getDate());
+            if (eventDTO.getPrice() != 0) event.setPrice(eventDTO.getPrice());
+            if (eventDTO.getPlace() != 0) event.setPlace(eventDTO.getPlace());
+            if (eventDTO.getImageUrl() != null) event.setImageUrl(eventDTO.getImageUrl());
+
+            eventDao.update(event);
+
+            EventDTO saved = eventDao.findOneWithDetails(eventId);
+            return Response.ok(saved).build();
+
         } catch (Exception e) {
             e.printStackTrace();
             return Response.serverError().entity(e.getMessage()).build();
