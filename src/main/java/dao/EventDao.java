@@ -2,10 +2,7 @@ package dao;
 
 import daoGeneric.AbstractJpaDao;
 import dto.EventDTO;
-import entity.Event;
-import entity.Organizer;
-import entity.TicketStatus;
-import entity.User;
+import entity.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -27,10 +24,13 @@ public class EventDao extends AbstractJpaDao<Long, Event> {
         event.getOrganizer().size();
         return new EventDTO(event);
     }
+    public void saveWithOrganizerAndArtist(Event event,
+                                           Long organizerId,
+                                           Long artistId) {
 
-    public Event saveWithOrganizer(Event event, Long organizerId) {
         EntityManager em = getEm();
         EntityTransaction tx = em.getTransaction();
+
         try {
             tx.begin();
             if (organizerId != null) {
@@ -41,24 +41,34 @@ public class EventDao extends AbstractJpaDao<Long, Event> {
                     organizer.getEvents().add(event);
                 }
             }
+
+            if (artistId != null) {
+                Artist artist = em.find(Artist.class, artistId);
+                if (artist != null) {
+                    event.getArtists().add(artist);
+                    artist.getEvents().add(event);
+                }
+            }
             em.persist(event);
             tx.commit();
-            return event;
         } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+
             throw e;
+
         } finally {
             em.close();
         }
     }
 
-    // détails ───────────────────────────────────────────────
     public EventDTO findOneWithDetails(Long id) {
         EntityManager em = getEm();
         try {
             Event event = em.find(Event.class, id);
             if (event == null) return null;
-            return toDTO(event); // ← session encore ouverte
+            return toDTO(event);
         } finally {
             em.close();
         }

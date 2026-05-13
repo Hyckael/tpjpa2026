@@ -10,6 +10,7 @@ import entity.Organizer;
 
 public class EventDTO {
     private Long id;
+    private Long artistId;
     private int place;
     private String description;
     private String address;
@@ -29,6 +30,15 @@ public class EventDTO {
 
     public EventDTO(Event event){
         this.id = event.getId();
+
+        if (!event.getArtists().isEmpty()) {
+            this.artistId = event.getArtists()
+                    .stream()
+                    .findFirst()
+                    .map(Artist::getId)
+                    .orElse(null);
+        }
+
         this.place = event.getPlace();
         this.date =  event.getDate();
         this.description = event.getDescription();
@@ -38,15 +48,35 @@ public class EventDTO {
         this.city = event.getCity();
         this.ticketCount = event.getTickets().size();
         this.createdAt = event.getCreatedAt();
-        this.artisteName = event.getArtists().stream().map(Artist::getName).collect(Collectors.toList());
-        this.organizerName = event.getOrganizer().stream().map(Organizer::getName).collect(Collectors.toList());
+
+        this.artisteName = event.getArtists()
+                .stream()
+                .map(Artist::getName)
+                .collect(Collectors.toList());
+
+        this.organizerName = event.getOrganizer()
+                .stream()
+                .map(Organizer::getName)
+                .collect(Collectors.toList());
+
         if (!event.getOrganizer().isEmpty()) {
-            this.organizerId = event.getOrganizer().stream().findFirst().map(Organizer::getId).orElse(null);
+            this.organizerId = event.getOrganizer()
+                    .stream()
+                    .findFirst()
+                    .map(Organizer::getId)
+                    .orElse(null);
         }
     }
 
     public Long getId() {
         return id;
+    }
+    public Long getArtistId() {
+        return artistId;
+    }
+
+    public void setArtistId(Long artistId) {
+        this.artistId = artistId;
     }
 
     public int getPlace() {

@@ -84,7 +84,11 @@ public class EventResource {
     public Response createEvent(EventDTO eventDTO) {
         try {
             Event event = new Event(eventDTO);
-            eventDao.saveWithOrganizer(event, eventDTO.getOrganizerId());
+            eventDao.saveWithOrganizerAndArtist(
+                    event,
+                    eventDTO.getOrganizerId(),
+                    eventDTO.getArtistId()
+            );
             // Recharger avec détails après save
             EventDTO saved = eventDao.findOneWithDetails(event.getId());
             return Response.status(Response.Status.CREATED).entity(saved).build();
